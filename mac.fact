@@ -1,0 +1,14 @@
+#!/bin/sh
+
+ioreg=`/usr/sbin/ioreg -rd1 -c IOPlatformExpertDevice`
+serial=`echo "$ioreg" | /usr/bin/awk '/IOPlatformSerialNumber/ {x=$3;gsub("\"","",x); print x}'`
+uuid=`echo "$ioreg" | /usr/bin/awk '/IOPlatformUUID/ {x=$3;gsub("\"","",x); print x}'`
+consoleuser=`/usr/bin/who | /usr/bin/awk '/console/ {print $1}'`
+
+cat <<EOF
+{
+  "serial"           : "$serial",
+  "uuid"             : "$uuid",
+  "consoleuser"      : "$consoleuser"
+}
+EOF

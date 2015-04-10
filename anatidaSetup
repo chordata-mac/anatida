@@ -1,0 +1,39 @@
+#!/bin/bash
+
+function die() {
+  echo ERROR "$@" >&2
+  exit 1
+}
+
+# ensure we have command-line tools
+if [[ $(/usr/bin/xcode-select -p &>/dev/null; /bin/echo $?) == 2 ]]; then
+  cmd_line_tools_temp_file="/tmp/.com.apple.dt.CommandLineTools.installondemand.in-progress"
+  touch "$cmd_line_tools_temp_file"
+  cmd_line_tools=$(softwareupdate -l | awk '/\*\ Command Line Tools/ { $1=$1;print }' | tail -1 | sed 's/^[[ \t]]*//;s/[[ \t]]*$//;s/*//' | cut -c 2-)
+  softwareupdate -i "$cmd_line_tools" -v
+  if [[ $(/usr/bin/xcode-select -p &>/dev/null; /bin/echo $?) != 2 ]]; then
+    echo "CLT installed."
+    if [[ -f "$cmd_line_tools_temp_file" ]]; then
+      rm "$cmd_line_tools_temp_file"
+    fi
+  else
+    die "CLT install failed"
+  fi
+fi
+
+# install ansible
+echo "Installing virtualenv"
+/usr/bin/easy_install virtualenv
+echo "Setting up ansible-virtualenv"
+/usr/local/bin/virtualenv /usr/local/chordata/ansible
+echo "Installing ansible"
+/usr/local/chordata/ansible/bin/pip install ansible
+
+# remove installer
+if [ -e /usr/local/chordata/ansible/bin/ansible ]; then
+  srm $0
+else
+  die "bad Ansible install"
+fi
+
+exit 0

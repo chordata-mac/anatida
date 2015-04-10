@@ -8,7 +8,7 @@ getting started
 
 ### setup
 
-fork this repo and change [this line](https://github.com/pearofducks/anatida/blob/master/com.chordata.anatida.plist#L12) to a git repo of your choosing that has ansible content (a local.yml file is required)
+fork this repo and change [this line](https://github.com/chordata-mac/anatida/blob/master/com.chordata.anatida.plist#L12) to a git repo of your choosing that has ansible content (a local.yml file is required)
 
 ### installation
 

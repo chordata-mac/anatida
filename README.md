@@ -3,18 +3,27 @@ anatida
 
 anatida is a chordata component, it sets up [Ansible](http://www.ansible.com) to run at a specified interval (via ansible-pull) for setup/maintenance tasks
 
-setup
------
+getting started
+---------------
+
+### setup
 
 fork this repo and change [this line](https://github.com/pearofducks/anatida/blob/master/com.chordata.anatida.plist#L12) to a git repo of your choosing that has ansible content (a local.yml file is required)
 
-installation
-------------
+### installation
 
 if [the luggage](https://github.com/unixorn/luggage) is installed you can simply `make pkg`, then use the resulting package on the target machine(s)
 
-components
-----------
+more information
+----------------
+
+### objectives
+
+*if it swims like a duck and quacks like a duck, it probably is a duck*
+
+Many configuration management systems for Mac have layers of abstraction that hide the tool below. anatida sets up Ansible, runs Ansible, and doesn't hide Ansible from you.
+
+### components
 
 - */Library/LaunchDaemons/***com.chordata.anatida.plist:** runs `anatidaRun` on reboot, and every 10 hours - or on first wake after this. This is also loaded immediately after install via postinstall.
 - */usr/local/chordata/***anatidaRun:** pulls the repo (specified as the first argument) and runs ansible using the local.yml file in the repo, it will test for connectivity repeatedly before timing out

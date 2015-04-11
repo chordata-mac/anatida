@@ -33,6 +33,10 @@ Many configuration management systems for Mac have layers of abstraction that hi
   - creates a virtualenv at `/usr/local/chordata/ansible`
   - installs ansible into that virtualenv, ansible commands are found at `/usr/local/chordata/ansible/bin`
 - */etc/ansible/facts.d/***mac.fact:** provides additional Mac-specific facts that Ansible lacks.
-  - ansible_local.mac.serial: the Mac's serial number
-  - ansible_local.mac.uuid: the Mac's hardware UUID
+  - ansible_local.mac.battery.*: info on battery current capacity, cycle count, etc.
+  - ansible_local.mac.password_policies.*: all currently set global password policies
+  - ansible_local.mac.system_profile.*: all attributes from SPHardwareDataType and SPSoftwareDataType
+  - ansible_local.mac.disk.{free_gb|used_gb}: the Mac's '/' drive - free and used space in GB
+  - ansible_local.mac.filevault_encrypted: true if FileVault is enabled
+  - ansible_local.mac.has_munki: true if munki is found at /usr/local/munki
   - ansible_local.mac.consoleuser: the user currently logged into the GUI when Ansible is running

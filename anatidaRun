@@ -15,8 +15,14 @@ do
   fi
 done
 
-if [ ! -e /usr/local/chordata/ansible/bin/ansible ]; then
+ansible_bin='/usr/local/chordata/ansible/bin'
+
+if [ ! -e $ansible_bin/ansible ]; then
   /usr/local/chordata/anatidaSetup
+fi
+
+if [[ -n $($ansible_bin/pip list -o | grep ansible) ]]; then
+  $ansible_bin/pip freeze --local | grep -v '^\-e' | cut -d = -f 1  | xargs $ansible_bin/pip install -U
 fi
 
 PATH=/usr/local/chordata/ansible/bin:$PATH

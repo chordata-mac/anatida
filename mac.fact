@@ -1,7 +1,6 @@
 #!/usr/bin/ruby
 
 require 'json'
-require 'pry'
 
 out = {}
 system_profile = `/usr/sbin/system_profiler SPHardwareDataType SPSoftwareDataType`.lines.map { |l| l.strip }

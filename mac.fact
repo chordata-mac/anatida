@@ -33,6 +33,6 @@ battery_hash = Hash[battery.keep_if { |line|
 }]
 out[:battery] = battery_hash
 
-# has munki?
+out[:has_munki] = File.exists? "/usr/local/munki/managedsoftwareupdate"
 
 puts out.to_json

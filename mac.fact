@@ -1,14 +1,39 @@
-#!/bin/sh
+#!/usr/bin/ruby
 
-ioreg=`/usr/sbin/ioreg -rd1 -c IOPlatformExpertDevice`
-serial=`echo "$ioreg" | /usr/bin/awk '/IOPlatformSerialNumber/ {x=$3;gsub("\"","",x); print x}'`
-uuid=`echo "$ioreg" | /usr/bin/awk '/IOPlatformUUID/ {x=$3;gsub("\"","",x); print x}'`
-consoleuser=`/usr/bin/who | /usr/bin/awk '/console/ {print $1}'`
+require 'json'
+require 'pry'
 
-cat <<EOF
-{
-  "serial"           : "$serial",
-  "uuid"             : "$uuid",
-  "consoleuser"      : "$consoleuser"
-}
-EOF
+out = {}
+system_profile = `/usr/sbin/system_profiler SPHardwareDataType SPSoftwareDataType`.lines.map { |l| l.strip }
+sp_hash = {}
+system_profile.each do |line|
+  data = line.split(': ')
+  sp_hash[data.first.gsub(/\W/,'').downcase] = data.last unless data.length != 2
+end
+out[:system_profile] = sp_hash
+
+out[:filevault_encrypted] = system("/usr/bin/fdesetup isactive >/dev/null 2>&1")
+
+out[:password_policies] = Hash[`/usr/bin/pwpolicy getglobalpolicy`.strip.split(' ').map { |e| e.split('=') }]
+out[:console_user]= `/usr/bin/who | /usr/bin/awk '/console/ {print $1}'`.strip
+
+disk_hash = {}
+disk = `/bin/df /`.lines.last.split(' ')
+disk_hash[:used_gb] = disk[2].to_i / 2097300
+disk_hash[:free_gb] = disk[3].to_i / 2097300
+out[:disk] = disk_hash
+
+battery = `/usr/sbin/ioreg -rd1 -c 'AppleSmartBattery'`.lines.map { |l| l.strip.gsub('"','') }
+battery_hash = Hash[battery.keep_if { |line|
+  line.include? "MaxCapacity" or
+  line.include? "CurrentCapacity" or
+  line.include? "CycleCount" or
+  line.include? "Temperature"
+}.map { |line|
+  line.split(' = ')
+}]
+out[:battery] = battery_hash
+
+# has munki?
+
+puts out.to_json

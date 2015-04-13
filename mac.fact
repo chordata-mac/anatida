@@ -36,7 +36,4 @@ out[:battery] = battery_hash
 
 out[:has_munki] = File.exists? "/usr/local/munki/managedsoftwareupdate"
 
-# example modification to facts for munki basic auth
-out[:c] = Base64.encode64("#{out[:system_profile]['serialnumbersystem']}:#{out[:system_profile]['hardwareuuid']}").strip
-
 puts out.to_json

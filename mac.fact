@@ -1,6 +1,7 @@
 #!/usr/bin/ruby
 
 require 'json'
+require 'base64'
 
 out = {}
 system_profile = `/usr/sbin/system_profiler SPHardwareDataType SPSoftwareDataType`.lines.map { |l| l.strip }
@@ -34,5 +35,8 @@ battery_hash = Hash[battery.keep_if { |line|
 out[:battery] = battery_hash
 
 out[:has_munki] = File.exists? "/usr/local/munki/managedsoftwareupdate"
+
+# example modification to facts for munki basic auth
+out[:c] = Base64.encode64("#{out[:system_profile]['serialnumbersystem']}:#{out[:system_profile]['hardwareuuid']}").strip
 
 puts out.to_json

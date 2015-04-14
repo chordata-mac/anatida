@@ -29,6 +29,6 @@ PATH=/usr/local/chordata/ansible/bin:$PATH
 ansible-pull \
     --url=$1 \
     --inventory=localhost, \
-    --directory=/usr/local/chordata/anatida
+    --directory=/usr/local/chordata/vertebrae
 
 exit 0

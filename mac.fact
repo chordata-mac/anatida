@@ -5,23 +5,19 @@ require 'base64'
 
 out = {}
 system_profile = `/usr/sbin/system_profiler SPHardwareDataType SPSoftwareDataType`.lines.map { |l| l.strip }
-sp_hash = {}
 system_profile.each do |line|
   data = line.split(': ')
-  sp_hash[data.first.gsub(/\W/,'').downcase] = data.last unless data.length != 2
+  out[data.first.gsub(/\W/,'').downcase] = data.last unless data.length != 2
 end
-out[:system_profile] = sp_hash
 
-out[:filevault_encrypted] = system("/usr/bin/fdesetup isactive >/dev/null 2>&1")
+out[:fv_enabled] = system("/usr/bin/fdesetup isactive >/dev/null 2>&1")
 
-out[:password_policies] = Hash[`/usr/bin/pwpolicy getglobalpolicy`.strip.split(' ').map { |e| e.split('=') }]
-out[:console_user]= `/usr/bin/who | /usr/bin/awk '/console/ {print $1}'`.strip
+out[:password_policy] = Hash[`/usr/bin/pwpolicy getglobalpolicy`.strip.split(' ').map { |e| e.split('=') }]
+out[:guiuser]= `/usr/bin/who | /usr/bin/awk '/console/ {print $1}'`.strip
 
-disk_hash = {}
 disk = `/bin/df /`.lines.last.split(' ')
-disk_hash[:used_gb] = disk[2].to_i / 2097300
-disk_hash[:free_gb] = disk[3].to_i / 2097300
-out[:disk] = disk_hash
+out[:used_gb] = disk[2].to_i / 2097300
+out[:free_gb] = disk[3].to_i / 2097300
 
 battery = `/usr/sbin/ioreg -rd1 -c 'AppleSmartBattery'`.lines.map { |l| l.strip.gsub('"','') }
 battery_hash = Hash[battery.keep_if { |line|

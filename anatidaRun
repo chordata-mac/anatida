@@ -25,10 +25,12 @@ if [[ -n $($ansible_bin/pip list -o | grep ansible) ]]; then
   $ansible_bin/pip freeze --local | grep -v '^\-e' | cut -d = -f 1  | xargs $ansible_bin/pip install -U
 fi
 
+dirname=`echo $1 | /usr/bin/awk -F/ '{ print $NF }'`
+
 PATH=/usr/local/chordata/ansible/bin:$PATH
 ansible-pull \
     --url=$1 \
     --inventory=localhost, \
-    --directory=/usr/local/chordata/vertebrae
+    --directory=/usr/local/chordata/$dirname
 
 exit 0

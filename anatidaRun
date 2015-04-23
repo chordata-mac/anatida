@@ -5,10 +5,10 @@ function die() {
   exit 1
 }
 
-for i in {1..50};
+for i in {1..500};
 do
   if [[ $(/sbin/ping -q -c 1 google.com &>/dev/null; /bin/echo $?) != 0 || $(/usr/bin/who | /usr/bin/grep console | /usr/bin/awk '{ print $1 }') == 'root' ]]; then
-    if [ $i -gt 45 ]; then die "No connection to the interwebs or console stuck on root"; fi
+    if [ $i -gt 450 ]; then die "No connection to the interwebs or console stuck on root"; fi
     sleep 10
   else
     break

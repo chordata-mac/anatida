@@ -9,7 +9,7 @@
 	<key>ProgramArguments</key>
 	<array>
 		<string>/usr/local/chordata/anatidaRun</string>
-		<string>http://github.com/pearofducks/anatida-example-repo</string>
+		<string>https://github.com/chordata-mac/example-repo</string>
 	</array>
 	<key>RunAtLoad</key>
 	<true/>
